@@ -1,6 +1,6 @@
 /** Keeps one warmed recognizer alive independently of camera/video lifetimes. */
 export class PoseService {
-  constructor({createWorker=()=>new Worker(new URL('./pose-worker.js?v=08912ef38ad0',import.meta.url)),onState=()=>{},onResult=()=>{},onError=()=>{},timeoutMs=60000}={}){
+  constructor({createWorker=()=>new Worker(new URL('./pose-worker.js?v=58de99097134',import.meta.url)),onState=()=>{},onResult=()=>{},onError=()=>{},timeoutMs=60000}={}){
     this.createWorker=createWorker;this.onState=onState;this.onResult=onResult;this.onError=onError;this.timeoutMs=timeoutMs;
     this.worker=null;this.promise=null;this.ready=false;this.busy=false;this.delegate='';this.cancel=null;
   }
