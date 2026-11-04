@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
-import {BattleEngine, SKILLS} from './combat.js?v=2f71fb290d75';
+import {BattleEngine, SKILLS} from './combat.js?v=08912ef38ad0';
 const clamp=THREE.MathUtils.clamp,mix=THREE.MathUtils.lerp;
 const V=(x=0,y=0,z=0)=>new THREE.Vector3(x,y,z);
 const glow=(color,opacity=1)=>new THREE.MeshBasicMaterial({color,transparent:true,opacity,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending,toneMapped:false,fog:false});
