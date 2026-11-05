@@ -1,4 +1,4 @@
-import {BEAM_TIMING,DISC_TIMING} from './action-timing.js?v=533e9c260cf4';
+import {BEAM_TIMING,DISC_TIMING} from './action-timing.js?v=b0887bd24043';
 export const WAVES = [
   {name:'岩甲兽 · 格兰',model:'basalt',title:'海湾入侵者',hp:110,color:0x62edc6,attacks:['bolt','slam']},
   {name:'潮汐兽 · 澜牙',model:'leviathan',title:'深海来客',hp:145,color:0x68d9ff,attacks:['bolt','sweep']},

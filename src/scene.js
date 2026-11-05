@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
-import {BattleEngine, SKILLS} from './combat.js?v=533e9c260cf4';
-import {HeroAnimation} from './hero-animation.js?v=533e9c260cf4';
-import {BEAM_TIMING,DISC_TIMING} from './action-timing.js?v=533e9c260cf4';
-import {BeamVolume} from './beam-effect.js?v=533e9c260cf4';
+import {BattleEngine, SKILLS} from './combat.js?v=b0887bd24043';
+import {HeroAnimation} from './hero-animation.js?v=b0887bd24043';
+import {BEAM_TIMING,DISC_TIMING} from './action-timing.js?v=b0887bd24043';
+import {BeamVolume} from './beam-effect.js?v=b0887bd24043';
 const clamp=THREE.MathUtils.clamp,mix=THREE.MathUtils.lerp;
 const V=(x=0,y=0,z=0)=>new THREE.Vector3(x,y,z);
 const glow=(color,opacity=1)=>new THREE.MeshBasicMaterial({color,transparent:true,opacity,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending,toneMapped:false,fog:false});
