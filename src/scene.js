@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
-import {BattleEngine, SKILLS} from './combat.js?v=b0887bd24043';
-import {HeroAnimation} from './hero-animation.js?v=b0887bd24043';
-import {BEAM_TIMING,DISC_TIMING} from './action-timing.js?v=b0887bd24043';
-import {BeamVolume} from './beam-effect.js?v=b0887bd24043';
+import {BattleEngine, SKILLS} from './combat.js?v=69f031d28147';
+import {HeroAnimation} from './hero-animation.js?v=69f031d28147';
+import {BEAM_TIMING,DISC_TIMING} from './action-timing.js?v=69f031d28147';
+import {BeamVolume} from './beam-effect.js?v=69f031d28147';
 const clamp=THREE.MathUtils.clamp,mix=THREE.MathUtils.lerp;
 const V=(x=0,y=0,z=0)=>new THREE.Vector3(x,y,z);
 const glow=(color,opacity=1)=>new THREE.MeshBasicMaterial({color,transparent:true,opacity,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending,toneMapped:false,fog:false});
@@ -117,7 +117,7 @@ export class BattleScene extends BattleEngine {
       for(let i=0;i<16;i++){const a=i*Math.PI/8;const tooth=this.mesh(new THREE.ConeGeometry(.045,.11,3),glow(0xffe4a3),V(Math.cos(a)*.395,Math.sin(a)*.395,0),disc);tooth.rotation.z=a-Math.PI/2;}
       entry.halo=this.flare(V(),0xffb746,1.35,disc,.25);
       entry.trail=[];for(let i=0;i<6;i++)entry.trail.push(this.flare(start,0xffca69,.75-i*.07,group,.22-i*.025));
-      const light=new THREE.PointLight(0xffcc70,16,10,1.5);disc.add(light);entry.discSize=this.camera.aspect<1?.8:1;
+      const light=new THREE.PointLight(0xffcc70,16,10,1.5);disc.add(light);entry.discSize=(this.camera.aspect<1?.8:1)*this.hero.lens.scale;
     }
     this.visualEffects.push(entry);
   }
