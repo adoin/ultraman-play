@@ -1,7 +1,7 @@
-import { BattleScene } from './scene.js?v=ed05fe92364a';
-import { GestureRecognizer } from './gestures.js?v=ed05fe92364a';
-import {PoseService} from './pose-service.js?v=ed05fe92364a';
-import {BattleEngine, ATTACKS, SKILLS} from './combat.js?v=ed05fe92364a';
+import { BattleScene } from './scene.js?v=7da9a232bdd8';
+import { GestureRecognizer } from './gestures.js?v=7da9a232bdd8';
+import {PoseService} from './pose-service.js?v=7da9a232bdd8';
+import {BattleEngine, ATTACKS, SKILLS} from './combat.js?v=7da9a232bdd8';
 const $=id=>document.getElementById(id);
 const video=$('input-video'),recognizer=new GestureRecognizer();
 const state={started:false,starting:false,manualPause:false,mode:'keyboard',workerReady:false,busy:false,epoch:0,lastFrame:-1,lastDetect:0,lastResult:0,stream:null,url:null,sound:true,context:null,debug:[],tracking:false,delegate:'',pending:false,keys:new Set(),manualGuard:false,gestureGuard:false,gestureLean:0,dodgeUntil:0,dodgeDirection:0};
@@ -51,7 +51,7 @@ $('difficulty').onchange=e=>scene.difficulty=e.target.value;
 $('quality').onchange=e=>scene.setQuality?.(e.target.value);
 $('recenter').onclick=()=>{recognizer.reset();state.gestureLean=0;state.gestureGuard=false;log('已校准侧身中心');};
 $('fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.querySelector('.arena').requestFullscreen();}catch{say('浏览器不支持全屏，可横屏游玩');}};
-for(const [id,button] of [['help-dialog','help'],['settings-dialog','settings']]){const dialog=$(id);$(button).onclick=()=>{dialog.showModal();syncPause();};dialog.addEventListener('close',()=>{recognizer.reset();syncPause();});dialog.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>dialog.close());dialog.addEventListener('click',e=>{if(e.target===dialog){const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close();}});}
+for(const [id,button] of [['help-dialog','help'],['settings-dialog','settings'],['credits-dialog','credits']]){const dialog=$(id);$(button).onclick=()=>{dialog.showModal();syncPause();};dialog.addEventListener('close',()=>{recognizer.reset();syncPause();});dialog.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>dialog.close());dialog.addEventListener('click',e=>{if(e.target===dialog){const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close();}});}
 document.addEventListener('visibilitychange',()=>{recognizer.reset();clearDefense();syncPause();});
 $('sound').onclick=()=>{state.sound=!state.sound;updateSound();if(state.sound)tone('win');};
 function updateSound(){$('sound').setAttribute('aria-pressed',String(state.sound));$('sound').setAttribute('aria-label',state.sound?'关闭声音':'开启声音');$('sound').textContent=state.sound?'♪':'♩';}updateSound();
