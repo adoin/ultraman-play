@@ -1,7 +1,7 @@
-import { BattleScene } from './scene.js?v=e895e0c016b3';
-import { GestureRecognizer } from './gestures.js?v=e895e0c016b3';
-import {PoseService} from './pose-service.js?v=e895e0c016b3';
-import {BattleEngine, ATTACKS, SKILLS, SHIELD} from './combat.js?v=e895e0c016b3';
+import { BattleScene } from './scene.js?v=bcfb13230bd4';
+import { GestureRecognizer } from './gestures.js?v=bcfb13230bd4';
+import {PoseService} from './pose-service.js?v=bcfb13230bd4';
+import {BattleEngine, ATTACKS, SKILLS, SHIELD} from './combat.js?v=bcfb13230bd4';
 const $=id=>document.getElementById(id);
 const recognizer=new GestureRecognizer();
 let video=null;
