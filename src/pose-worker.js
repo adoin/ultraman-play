@@ -1,5 +1,5 @@
 self.exports = {};
-importScripts('../public/vendor/vision_bundle.js?v=5c654b0035a9');
+importScripts('../public/vendor/vision_bundle.js?v=2a3edec46bd3');
 const { FilesetResolver, PoseLandmarker } = self.exports;
 let model,delegate='GPU';
 self.onmessage=async({data})=>{

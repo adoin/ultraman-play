@@ -1,10 +1,10 @@
 ﻿import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
-import {BattleEngine, SKILLS, CELEBRATION} from './combat.js?v=5c654b0035a9';
-import {MonsterMotion} from './monster-motion.js?v=5c654b0035a9';
-import {HeroAnimation} from './hero-animation.js?v=5c654b0035a9';
-import {BEAM_TIMING,DISC_TIMING,discTiming} from './action-timing.js?v=5c654b0035a9';
-import {BeamVolume} from './beam-effect.js?v=5c654b0035a9';
+import {BattleEngine, SKILLS, CELEBRATION} from './combat.js?v=2a3edec46bd3';
+import {MonsterMotion} from './monster-motion.js?v=2a3edec46bd3';
+import {HeroAnimation} from './hero-animation.js?v=2a3edec46bd3';
+import {BEAM_TIMING,DISC_TIMING,discTiming} from './action-timing.js?v=2a3edec46bd3';
+import {BeamVolume} from './beam-effect.js?v=2a3edec46bd3';
 const clamp=THREE.MathUtils.clamp,mix=THREE.MathUtils.lerp;
 const hitColor=new THREE.Color(0xffe3c8);
 const V=(x=0,y=0,z=0)=>new THREE.Vector3(x,y,z);
@@ -119,7 +119,9 @@ export class BattleScene extends BattleEngine {
     finally{this.renderer.setRenderTarget(previous);this.hands.visible=false;this.hero.reset();target.dispose();}
   }
   async loadVictoryModel(loader,revision){
-    const gltf=await loader.loadAsync(new URL(`../public/motion-preview/tiga-torch.glb?v=${revision}`,import.meta.url).href);
+    // The downloaded community model keeps its baked take-off pose; it has no
+    // armature, so the celebration only moves the whole figure.
+    const gltf=await loader.loadAsync(new URL(`../public/motion-preview/tiga-flight.glb?v=${revision}`,import.meta.url).href);
     const root=gltf.scene;
     root.traverse(node=>{if(node.isMesh){node.frustumCulled=false;node.castShadow=true;node.receiveShadow=true;}});
     const bounds=new THREE.Box3().setFromObject(root),size=bounds.getSize(V()),center=bounds.getCenter(V());

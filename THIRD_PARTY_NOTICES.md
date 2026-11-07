@@ -16,7 +16,11 @@ The independent punch preview uses **Punch_Cross** by **Quaternius**, from [Univ
 
 ## Victory take-off
 
-The end-of-adventure celebration reuses the same Tiga derivative with **Idle_Torch_Loop** by **Quaternius** (Universal Animation Library, CC0 1.0), retargeted through `art/import_body_motion.py`. Two documented CC0 releases are accepted: `UAL1_Standard.glb` from the official pack (SHA-256 `69591853…4ed67997`) and the itch.io glTF mirror `AnimationLibrary_Godot_Standard.gltf` (SHA-256 `0ff075c7…3dd8027765`, Rigify `DEF-` bone names mapped in the script). The ascent, body tilt, turn, sky darkening and star fade are authored in `src/scene.js`; the GLB only carries the arm-raised pose loop. Output: `public/motion-preview/tiga-torch.glb`.
+The end-of-adventure celebration uses the **downloaded community Tiga model** described in `art/sources/迪迦/SOURCE.md`. That pack ships 60 Max-Biped vertex groups but no armature, and its FBX has no weights at all. `art/import_tiga_flight.py` rebuilds a 68-bone Biped skeleton from the weighted vertex clusters (twist bones mark each limb's midpoint, so joints are extrapolated from the twist centroid and the next joint), aims the right arm into a raised-fist take-off pose, turns the figure to face -Y using the toe direction, bakes the armature and exports `public/motion-preview/tiga-flight.glb`. The left arm keeps its authored A-pose because the reconstructed elbow pivot is not accurate enough to rotate it without shearing the sleeve. The ascent, body tilt, turn, sky darkening and star fade are authored in `src/scene.js`.
+
+The pack carries no author credit and states that it is for non-commercial study only; the game is non-commercial fan work and this limitation is recorded with the pack's file hashes in `art/sources/迪迦/SOURCE.md`.
+
+The **Idle_Torch_Loop** retarget (Quaternius Universal Animation Library, CC0 1.0) remains reproducible through the same script for the Extrazhang arm rig, but the game no longer references it.
 
 ## Three.js
 
