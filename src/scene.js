@@ -1,10 +1,10 @@
 ﻿import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
-import {BattleEngine, SKILLS, CELEBRATION} from './combat.js?v=2a3edec46bd3';
-import {MonsterMotion} from './monster-motion.js?v=2a3edec46bd3';
-import {HeroAnimation} from './hero-animation.js?v=2a3edec46bd3';
-import {BEAM_TIMING,DISC_TIMING,discTiming} from './action-timing.js?v=2a3edec46bd3';
-import {BeamVolume} from './beam-effect.js?v=2a3edec46bd3';
+import {BattleEngine, SKILLS, CELEBRATION} from './combat.js?v=4a402d6c0358';
+import {MonsterMotion} from './monster-motion.js?v=4a402d6c0358';
+import {HeroAnimation} from './hero-animation.js?v=4a402d6c0358';
+import {BEAM_TIMING,DISC_TIMING,discTiming} from './action-timing.js?v=4a402d6c0358';
+import {BeamVolume} from './beam-effect.js?v=4a402d6c0358';
 const clamp=THREE.MathUtils.clamp,mix=THREE.MathUtils.lerp;
 const hitColor=new THREE.Color(0xffe3c8);
 const V=(x=0,y=0,z=0)=>new THREE.Vector3(x,y,z);
@@ -164,7 +164,7 @@ export class BattleScene extends BattleEngine {
     const gather=ease(age/1.4);
     const lift=Math.max(0,age-1.4);
     const climb=lift*lift*3.2;
-    const recline=ease(lift/1.9)*.55;
+    const recline=ease(lift/2.2)*.45;
     this.camera.position.set(
       Math.sin(age*.4)*1.4,
       mix(this.celebration.from.y,10.6,gather)+Math.min(climb*.14,8),
@@ -175,7 +175,7 @@ export class BattleScene extends BattleEngine {
     if(this.victoryActor){
       this.victoryActor.position.y=climb;
       this.victoryActor.rotation.x=-recline;
-      this.victoryActor.rotation.y=ease((lift-1.6)/2.4)*Math.PI;
+      this.victoryActor.rotation.y=ease((lift-1)/2.6)*Math.PI*.6;
     }
     if(this.celebrationLight){
       this.celebrationLight.intensity=(60+Math.sin(age*4)*18)*(1-clamp(climb/80,0,1));
@@ -378,6 +378,7 @@ export class BattleScene extends BattleEngine {
   frame(now){const dt=Math.min((now-this.lastNow)/1000,.05);this.lastNow=now;if(!this.paused&&(!this.finished||this.celebrating>0)){this.advance(dt);}this.renderer.render(this.renderScene,this.camera);this.frameCount++;}
   dispose(){this.renderer.setAnimationLoop(null);this.observer.disconnect();this.clearTransient();this.flareTexture?.dispose();this.renderer.dispose();}
 }
+
 
 
 
