@@ -14,6 +14,10 @@ The on-screen **制作与鸣谢** presents this attribution and modification not
 
 The independent punch preview uses **Punch_Cross** by **Quaternius**, from [Universal Animation Library](https://quaternius.com/packs/universalanimationlibrary.html), licensed under [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/). The motion is retargeted to the Extrazhang Tiga derivative above. Adaptations include wrist and foot placement for the different body proportions, a first-person head mask and a camera at the source eye midpoint. The combined character asset is distributed for this noncommercial game. Both source credits appear on the preview page.
 
+## Victory take-off
+
+The end-of-adventure celebration reuses the same Tiga derivative with **Idle_Torch_Loop** by **Quaternius** (Universal Animation Library, CC0 1.0), retargeted through `art/import_body_motion.py`. Two documented CC0 releases are accepted: `UAL1_Standard.glb` from the official pack (SHA-256 `69591853…4ed67997`) and the itch.io glTF mirror `AnimationLibrary_Godot_Standard.gltf` (SHA-256 `0ff075c7…3dd8027765`, Rigify `DEF-` bone names mapped in the script). The ascent, body tilt, turn, sky darkening and star fade are authored in `src/scene.js`; the GLB only carries the arm-raised pose loop. Output: `public/motion-preview/tiga-torch.glb`.
+
 ## Three.js
 
 Three.js 0.180.0, copyright 2010-2025 three.js authors. MIT license, full text in public/vendor/three/LICENSE. Runtime modules and GLTFLoader are copied from the pinned npm package by scripts/build.mjs.

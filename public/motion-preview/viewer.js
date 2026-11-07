@@ -9,10 +9,15 @@ const seek = document.querySelector('#seek');
 const stamp = document.querySelector('#stamp');
 const slow = document.querySelector('#slow');
 
+// ?model=<file.glb>&clip=<ActionName> previews any retargeted clip on the same rig.
+const query = new URLSearchParams(location.search);
+const modelFile = query.get('model') || 'tiga-punch.glb';
+const clipName = query.get('clip') || 'Punch_Cross';
+
 async function start() {
   const world = new BattleScene(canvas, () => {});
   const loader = new GLTFLoader();
-  const [, model] = await Promise.all([world.ready, loader.loadAsync('./tiga-punch.glb')]);
+  const [, model] = await Promise.all([world.ready, loader.loadAsync('./' + modelFile)]);
   world.renderer.setAnimationLoop(null);
   world.start();
   world.camera.visible = false;
@@ -23,8 +28,10 @@ async function start() {
   world.renderScene.add(actor);
 
   const eye = actor.getObjectByName('EyeAnchor');
-  const clip = model.animations.find(animation => animation.name === 'Punch_Cross');
-  if (!eye || !clip) throw new Error('Missing eye camera or punch clip');
+  const clip = model.animations.find(animation => animation.name === clipName);
+  if (!eye || !clip) throw new Error('Missing eye camera or ' + clipName + ' clip');
+  document.title = '迪迦 · ' + clipName;
+  document.querySelector('h1').textContent = '迪迦 · ' + clipName;
   const head = [];
   actor.traverse(node => {
     if (node.userData.hide_at_eye) head.push(node);
