@@ -1,10 +1,10 @@
 ﻿import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
-import {BattleEngine, SKILLS, CELEBRATION, WAVES} from './combat.js?v=47d13c22b757';
-import {MonsterMotion} from './monster-motion.js?v=47d13c22b757';
-import {HeroAnimation} from './hero-animation.js?v=47d13c22b757';
-import {BEAM_TIMING,DISC_TIMING,ZEPELLION_TIMING,discTiming} from './action-timing.js?v=47d13c22b757';
-import {BeamVolume} from './beam-effect.js?v=47d13c22b757';
+import {BattleEngine, SKILLS, CELEBRATION, WAVES} from './combat.js?v=ad5254a129a5';
+import {MonsterMotion} from './monster-motion.js?v=ad5254a129a5';
+import {HeroAnimation} from './hero-animation.js?v=ad5254a129a5';
+import {BEAM_TIMING,DISC_TIMING,ZEPELLION_TIMING,discTiming} from './action-timing.js?v=ad5254a129a5';
+import {BeamVolume} from './beam-effect.js?v=ad5254a129a5';
 const clamp=THREE.MathUtils.clamp,mix=THREE.MathUtils.lerp;
 const hitColor=new THREE.Color(0xffe3c8);
 const V=(x=0,y=0,z=0)=>new THREE.Vector3(x,y,z);

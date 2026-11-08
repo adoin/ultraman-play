@@ -1,6 +1,6 @@
 ﻿/** Original synthesized score and effects; all voices are bundled, never inferred in battle. */
-import {SKILLS} from './combat.js?v=47d13c22b757';
-import {ZEPELLION_TIMING} from './action-timing.js?v=47d13c22b757';
+import {SKILLS} from './combat.js?v=ad5254a129a5';
+import {ZEPELLION_TIMING} from './action-timing.js?v=ad5254a129a5';
 
 export class GameAudio {
   constructor(){this.enabled=true;this.musicEnabled=true;this.voiceEnabled=true;this.active=false;this.voices=new Map();this.voiceHistory=new Map();this.finisherWave=0;this.hurtIndex=0;this.musicStep=0;this.musicURL=null;this.generation=0;}
