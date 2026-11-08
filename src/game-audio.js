@@ -1,5 +1,5 @@
 ﻿/** Original synthesized score and effects; all voices are bundled, never inferred in battle. */
-import {SKILLS} from './combat.js?v=8e60882c5fb8';
+import {SKILLS} from './combat.js?v=d19f81f1de1b';
 
 export class GameAudio {
   constructor(){this.enabled=true;this.musicEnabled=true;this.voiceEnabled=true;this.active=false;this.voices=new Map();this.voiceHistory=new Map();this.finisherWave=0;this.hurtIndex=0;this.musicStep=0;this.musicURL=null;this.generation=0;}
