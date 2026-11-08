@@ -67,8 +67,7 @@ Adapted materials and textures, repaired hand/foot parent chains and authored ru
 ## Alien Baltan
 Published by peak_9.20, CC BY 4.0.
 https://sketchfab.com/3d-models/alien-baltan-892f5bc4c9064d96a42790872c5a6977
-Original skinned model and animation clips, normalized in the game scene. Game playback adapts root translation and attack contact timing.
-Character designs belong to their respective rights holders.
+**No longer shipped** — wave 2 and the Baltan waves now use the converted MMD Baltan below. The credit stays for provenance of earlier builds. Character designs belong to their respective rights holders.
 
 ## Gan Q from Ultraman Gaia
 By aquanort, CC BY 4.0.
@@ -81,4 +80,4 @@ Eight original Chinese gameplay cues generated with the Qwen team official Studi
 
 Downloaded MMD models distributed by the Sketchfab uploader **这是我的刀盾** (folders named `*_by_这是我的刀盾_*` in the user's local `D:\download`). Formats: `.pmd` / `.pmx` with PNG textures. No author or licence statement ships with the archives, so they are used here as non-commercial fan assets; contact the uploader for the original credit.
 
-Converted with `art/import_mmd.py` (Blender 5.4 + the `mmd_tools` addon): rest-pose mesh only, one Principled material per MMD material with its own diffuse texture, arms lowered from the MMD T-pose, height normalised to 16 units, feet on the ground, facing -Y. Outputs: `public/models/kaiju/mefilas.glb` (wave 4) and `public/models/kaiju/baltan-new.glb` (wave 5). The game animates the whole body only; no skeletal clips are bundled.
+Converted with `art/import_mmd.py` (Blender 5.4 + the `mmd_tools` addon): rest-pose mesh only, one Principled material per MMD material with its own diffuse texture, arms lowered from the MMD T-pose, height normalised to 16 units, feet on the ground, facing -Y. Outputs: `baltan.glb` (wave 2), `baltan-basic.glb` (3), `mefilas.glb` (5), `baltan-powered.glb` (6), `baltan-mecha.glb` (7), `chaos-seven.glb` (8), `chaos-taro.glb` (9), `chaos-ultraman.glb` (10) and `gomora-mecha.glb` (11). Each keeps its MMD skeleton; `src/monster-motion.js` drives the limb bones and reads the hand bone for projectile origins, so no animation clips are bundled.

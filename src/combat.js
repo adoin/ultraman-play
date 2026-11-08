@@ -1,17 +1,35 @@
-import {BEAM_TIMING,DISC_TIMING,discTiming} from './action-timing.js?v=5a0468b308f0';
+import {BEAM_TIMING,DISC_TIMING,discTiming} from './action-timing.js?v=68e8714a85c8';
 export const WAVES = [
   {name:'雷德王',model:'redking',title:'海湾入侵者',hp:110,color:0xffcb7a,attacks:['bolt','charge','slam']},
-  {name:'巴尔坦星人',model:'baltan',title:'宇宙忍者',hp:145,color:0x68d9ff,attacks:['bolt','charge','sweep']},
-  {name:'加恩Q',model:'ganq',title:'巨眼的凝视',hp:175,color:0xee596d,attacks:['bolt','sweep','charge']},
-  {name:'美菲拉斯星人',model:'mefilas',title:'幻影突袭',hp:200,color:0x62cfff,attacks:['sweep','bolt','charge']},
-  {name:'巴尔坦星人 · 决战',model:'baltan-new',title:'最终守护战',hp:290,color:0xff8960,attacks:['bolt','sweep','charge']},
+  {name:'巴尔坦星人',model:'baltan',title:'宇宙忍者',hp:140,color:0x68d9ff,attacks:['bolt','charge','sweep']},
+  {name:'巴尔坦星人 · 量产型',model:'baltan-basic',title:'分身战术',hp:160,color:0x5fd0ff,attacks:['bolt','sweep','charge']},
+  {name:'加恩Q',model:'ganq',title:'巨眼的凝视',hp:180,color:0xee596d,attacks:['bolt','sweep','charge']},
+  {name:'美菲拉斯星人',model:'mefilas',title:'幻影突袭',hp:195,color:0x62cfff,attacks:['sweep','bolt','charge']},
+  {name:'巴尔坦星人 · 强化体',model:'baltan-powered',title:'能量增幅',hp:215,color:0x7ee0ff,attacks:['bolt','charge','sweep']},
+  {name:'机械巴尔坦',model:'baltan-mecha',title:'改造追击者',hp:235,color:0x9ad7e8,attacks:['sweep','bolt','charge']},
+  {name:'卡欧斯 · 赛文',model:'chaos-seven',title:'暗影头镖',hp:255,color:0xdc7bff,attacks:['bolt','sweep','charge']},
+  {name:'卡欧斯 · 泰罗',model:'chaos-taro',title:'暗之王冠',hp:275,color:0xff9a7b,attacks:['sweep','bolt','charge']},
+  {name:'卡欧斯 · 奥特曼',model:'chaos-ultraman',title:'光之逆影',hp:295,color:0xc7a6ff,attacks:['bolt','charge','sweep']},
+  {name:'机械哥莫拉',model:'gomora-mecha',title:'最终守护战',hp:330,color:0xffb066,attacks:['slam','bolt','charge']},
 ];
 export const SKILLS={palm:{cooldown:2.2,damage:20,impact:.34,duration:.72},beam:{cooldown:3.2,damage:46,impact:BEAM_TIMING.impact,duration:BEAM_TIMING.end},disc:{cooldown:1.65,damage:31,impact:DISC_TIMING.impact,duration:DISC_TIMING.end}};
 export const PUNCH={cooldown:.28,damage:12,impact:.18,duration:.36};
 export const SHIELD=Object.freeze({duration:2,cooldown:4,drain:10,recharge:14,blockCost:12});
 /** The final monster defeat hands the screen to the victory dance before results. */
 export const CELEBRATION=Object.freeze({duration:7.5});
-export const MONSTER_ATTACK_NAMES={redking:{bolt:'岩石投掷',slam:'震地跺脚',melee:'近身直拳',charge:'蛮力冲锋'},baltan:{bolt:'钳爪光弹',sweep:'钳爪光线',melee:'钳爪突刺',charge:'幻影突进'},ganq:{bolt:'巨眼光弹',sweep:'巨眼射线',melee:'巨眼撞击',charge:'巨眼突进'},mefilas:{bolt:'星人光弹',sweep:'星人射线',melee:'星人直拳',charge:'瞬移突进'},'baltan-new':{bolt:'钳爪光弹',sweep:'钳爪光线',melee:'钳爪突刺',charge:'幻影突进'}};
+export const MONSTER_ATTACK_NAMES={
+  redking:{bolt:'岩石投掷',slam:'震地跺脚',melee:'近身直拳',charge:'蛮力冲锋'},
+  baltan:{bolt:'钳爪光弹',sweep:'钳爪光线',melee:'钳爪突刺',charge:'幻影突进'},
+  'baltan-basic':{bolt:'分身光弹',sweep:'分身光线',melee:'钳爪突刺',charge:'影分身突进'},
+  ganq:{bolt:'巨眼光弹',sweep:'巨眼射线',melee:'巨眼撞击',charge:'巨眼突进'},
+  mefilas:{bolt:'星人光弹',sweep:'星人射线',melee:'星人直拳',charge:'瞬移突进'},
+  'baltan-powered':{bolt:'强化光弹',sweep:'增幅光线',melee:'钳爪猛击',charge:'能量冲锋'},
+  'baltan-mecha':{bolt:'机械光弹',sweep:'切割光线',melee:'钢爪突刺',charge:'推进冲锋'},
+  'chaos-seven':{bolt:'艾梅利姆光弹',sweep:'头镖横扫',melee:'暗影格斗拳',charge:'暗影突进'},
+  'chaos-taro':{bolt:'宇宙光弹',sweep:'王者射线',melee:'宇宙拳击',charge:'王冠冲锋'},
+  'chaos-ultraman':{bolt:'斯派修姆光弹',sweep:'逆光斯派修姆',melee:'奥特拳',charge:'高速突进'},
+  'gomora-mecha':{bolt:'机械光线',sweep:'超振动波',melee:'机械重拳',charge:'蛮力冲锋'},
+};
 export const ATTACKS={
   melee:{name:'近身重拳',hint:'胸前交叉双臂防御，或侧身闪避',damage:12,windup:1.0,flight:.3},
   bolt:{name:'能量弹',hint:'向左右侧身躲开，或胸前交叉双臂防御',damage:14,windup:2.2,flight:1.15},

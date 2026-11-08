@@ -1,14 +1,14 @@
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
-import {BattleEngine, SKILLS, CELEBRATION, WAVES} from './combat.js?v=5a0468b308f0';
-import {MonsterMotion} from './monster-motion.js?v=5a0468b308f0';
-import {HeroAnimation} from './hero-animation.js?v=5a0468b308f0';
-import {BEAM_TIMING,DISC_TIMING,discTiming} from './action-timing.js?v=5a0468b308f0';
-import {BeamVolume} from './beam-effect.js?v=5a0468b308f0';
+import {BattleEngine, SKILLS, CELEBRATION, WAVES} from './combat.js?v=68e8714a85c8';
+import {MonsterMotion} from './monster-motion.js?v=68e8714a85c8';
+import {HeroAnimation} from './hero-animation.js?v=68e8714a85c8';
+import {BEAM_TIMING,DISC_TIMING,discTiming} from './action-timing.js?v=68e8714a85c8';
+import {BeamVolume} from './beam-effect.js?v=68e8714a85c8';
 const clamp=THREE.MathUtils.clamp,mix=THREE.MathUtils.lerp;
 const hitColor=new THREE.Color(0xffe3c8);
 const V=(x=0,y=0,z=0)=>new THREE.Vector3(x,y,z);
-const FLOATERS=new Set(['ganq','baltan-new','mefilas']);
+const FLOATERS=new Set(['ganq']);
 const glow=(color,opacity=1)=>new THREE.MeshBasicMaterial({color,transparent:true,opacity,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending,toneMapped:false,fog:false});
 
 export class BattleScene extends BattleEngine {
@@ -258,7 +258,7 @@ export class BattleScene extends BattleEngine {
       this.loadMonster(this.loader,this.revision,requested).then(()=>{if(this.waveInfo.model===requested)this.selectMonster();}).catch(()=>{});
       return;
     }
-    this.monsterMotion?.dispose();if(this.currentMonster)this.renderScene.remove(this.currentMonster);this.currentMonster=this.models.get(this.waveInfo.model);this.monsterBaseZ=20-this.enemyDistance;this.currentMonster.position.set(0,0,this.monsterBaseZ);this.currentMonster.scale.setScalar(this.wave===5?1.12:1);this.currentMonster.rotation.set(0,0,0);this.knockbackAt=-Infinity;this.monsterHitAt=-Infinity;this.airborne=false;this.renderScene.add(this.currentMonster);this.currentMonster.visible=true;for(const rest of this.currentMonster.userData.restPose||[]){rest.node.position.copy(rest.position);rest.node.quaternion.copy(rest.quaternion);rest.node.scale.copy(rest.scale);}this.currentMonster.updateMatrixWorld(true);
+    this.monsterMotion?.dispose();if(this.currentMonster)this.renderScene.remove(this.currentMonster);this.currentMonster=this.models.get(this.waveInfo.model);this.monsterBaseZ=20-this.enemyDistance;this.currentMonster.position.set(0,0,this.monsterBaseZ);this.currentMonster.scale.setScalar(this.wave===WAVES.length?1.12:1);this.currentMonster.rotation.set(0,0,0);this.knockbackAt=-Infinity;this.monsterHitAt=-Infinity;this.airborne=false;this.renderScene.add(this.currentMonster);this.currentMonster.visible=true;for(const rest of this.currentMonster.userData.restPose||[]){rest.node.position.copy(rest.position);rest.node.quaternion.copy(rest.quaternion);rest.node.scale.copy(rest.scale);}this.currentMonster.updateMatrixWorld(true);
     this.monsterMotion=new MonsterMotion(this.currentMonster,this.waveInfo.model,this.monsterAnimations.get(this.waveInfo.model)||[]);
     if(!this.chargeFlare){this.chargeGroup=new THREE.Group();this.chargeGroup.visible=false;this.renderScene.add(this.chargeGroup);this.chargeFlare=this.flare(V(),0xffab64,1.5,this.chargeGroup,0);this.heldRock=this.rock(this.chargeGroup);this.chargeGroup.visible=true;try{this.renderer.compile(this.renderScene,this.camera);}finally{this.chargeGroup.visible=false;}}
     this.chargeGroup.visible=false;this.monsterLight.intensity=0;this.monsterLight.color.setHex(this.waveInfo.color);this.targetRing.material.color.setHex(this.waveInfo.color);this.clearTransient();
