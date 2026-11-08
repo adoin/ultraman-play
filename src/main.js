@@ -1,8 +1,8 @@
-import {GameAudio} from './game-audio.js?v=4a402d6c0358';
-import { BattleScene } from './scene.js?v=4a402d6c0358';
-import { GestureRecognizer } from './gestures.js?v=4a402d6c0358';
-import {PoseService} from './pose-service.js?v=4a402d6c0358';
-import {BattleEngine, ATTACKS, SKILLS, SHIELD} from './combat.js?v=4a402d6c0358';
+import {GameAudio} from './game-audio.js?v=1751b63776c8';
+import { BattleScene } from './scene.js?v=1751b63776c8';
+import { GestureRecognizer } from './gestures.js?v=1751b63776c8';
+import {PoseService} from './pose-service.js?v=1751b63776c8';
+import {BattleEngine, ATTACKS, SKILLS, SHIELD} from './combat.js?v=1751b63776c8';
 const $=id=>document.getElementById(id);
 const recognizer=new GestureRecognizer();
 const audio=new GameAudio();audio.prepare();

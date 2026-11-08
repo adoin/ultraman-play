@@ -1,13 +1,14 @@
-﻿import * as THREE from 'three';
+import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
-import {BattleEngine, SKILLS, CELEBRATION} from './combat.js?v=4a402d6c0358';
-import {MonsterMotion} from './monster-motion.js?v=4a402d6c0358';
-import {HeroAnimation} from './hero-animation.js?v=4a402d6c0358';
-import {BEAM_TIMING,DISC_TIMING,discTiming} from './action-timing.js?v=4a402d6c0358';
-import {BeamVolume} from './beam-effect.js?v=4a402d6c0358';
+import {BattleEngine, SKILLS, CELEBRATION, WAVES} from './combat.js?v=1751b63776c8';
+import {MonsterMotion} from './monster-motion.js?v=1751b63776c8';
+import {HeroAnimation} from './hero-animation.js?v=1751b63776c8';
+import {BEAM_TIMING,DISC_TIMING,discTiming} from './action-timing.js?v=1751b63776c8';
+import {BeamVolume} from './beam-effect.js?v=1751b63776c8';
 const clamp=THREE.MathUtils.clamp,mix=THREE.MathUtils.lerp;
 const hitColor=new THREE.Color(0xffe3c8);
 const V=(x=0,y=0,z=0)=>new THREE.Vector3(x,y,z);
+const FLOATERS=new Set(['ganq','baltan-new','mefilas']);
 const glow=(color,opacity=1)=>new THREE.MeshBasicMaterial({color,transparent:true,opacity,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending,toneMapped:false,fog:false});
 
 export class BattleScene extends BattleEngine {
@@ -98,18 +99,55 @@ export class BattleScene extends BattleEngine {
     this.mesh(new THREE.RingGeometry(.08,.34,48),glow(0xffcc66,.25),null,this.discPreview);
     this.impactVeil=this.mesh(new THREE.PlaneGeometry(10,10),new THREE.MeshBasicMaterial({color:0xff785b,transparent:true,opacity:0,depthTest:false,depthWrite:false}),V(0,0,-.2),this.camera);this.impactVeil.renderOrder=100;
   }
-  async loadAssets(){const loader=new GLTFLoader();const revision=new URL(import.meta.url).searchParams.get('v')||'local';await this.loadCity(loader);await Promise.all(['redking','baltan','ganq','hero-hands'].map(async name=>{const gltf=await loader.loadAsync(new URL(`../public/models/kaiju/${name}.glb?v=${revision}`,import.meta.url).href);const model=gltf.scene;model.traverse(o=>{if(o.isMesh){o.castShadow=name!=='hero-hands';o.receiveShadow=name!=='hero-hands';if(name==='hero-hands')o.frustumCulled=false;if(o.material)o.material.side=name==='hero-hands'?THREE.FrontSide:THREE.DoubleSide;}});if(name!=='hero-hands'){
-      model.traverse(o=>{if(o.isMesh&&o.material.emissive&&!o.material.userData.hitBase){o.material.userData.hitBase=o.material.emissive.clone();}});
-      this.monsterAnimations.set(name,gltf.animations);
-      const bounds=new THREE.Box3().setFromObject(model),size=bounds.getSize(V());
-      const torso=model.getObjectByName('upperbody1')||model.getObjectByName('Bip001_Pelvis_05');
-      const anchor=torso?torso.getWorldPosition(V()):bounds.getCenter(V());
-      const factor=16/size.y,wrapper=new THREE.Group();wrapper.add(model);model.scale.multiplyScalar(factor);model.position.add(V(-anchor.x,-bounds.min.y,-anchor.z).multiplyScalar(factor));
-      wrapper.userData.restPose=[];
-      model.traverse(node=>wrapper.userData.restPose.push({node,position:node.position.clone(),quaternion:node.quaternion.clone(),scale:node.scale.clone()}));
-      this.models.set(name,wrapper);
-    }else this.models.set(name,model);}));
-    const handRoot=this.models.get('hero-hands');this.hands.add(handRoot);for(const tag of ['L','R']){const arm=handRoot.getObjectByName('HeroArm'+tag);this.handMeshes.push(arm);}this.hero=new HeroAnimation(this.handMeshes,this.camera);this.warmViewmodel();await this.loadVictoryModel(loader,revision).catch(()=>{});this.assetReady=true;this.selectMonster();this.clientEvent({type:'assets-ready'});
+  async loadAssets(){
+    const loader=new GLTFLoader();
+    const revision=new URL(import.meta.url).searchParams.get('v')||'local';
+    this.loader=loader;this.revision=revision;
+    await this.loadCity(loader);
+    // Only the opening monster and the hero's arms are needed to enter the arena.
+    await Promise.all([this.loadMonster(loader,revision,WAVES[0].model),this.loadMonster(loader,revision,'hero-hands')]);
+    const handRoot=this.models.get('hero-hands');
+    this.hands.add(handRoot);
+    for(const tag of ['L','R']){const arm=handRoot.getObjectByName('HeroArm'+tag);this.handMeshes.push(arm);}
+    this.hero=new HeroAnimation(this.handMeshes,this.camera);
+    this.warmViewmodel();
+    await this.loadVictoryModel(loader,revision).catch(()=>{});
+    this.assetReady=true;
+    this.selectMonster();
+    // Every later wave streams in while the child is still fighting wave one.
+    this.prefetch=this.primeMonsters(loader,revision);
+    this.clientEvent({type:'assets-ready'});
+  }
+  primeMonsters(loader,revision){
+    const queue=[...new Set(WAVES.map(wave=>wave.model))].filter(name=>!this.models.has(name));
+    return queue.reduce((chain,name)=>chain.then(()=>this.loadMonster(loader,revision,name)).catch(()=>{}),Promise.resolve())
+      .then(()=>this.clientEvent({type:'monsters-ready'}));
+  }
+  /** Loads one kaiju on first use, sharing the request when two waves ask for it. */
+  loadMonster(loader,revision,name){
+    if(this.models.has(name))return Promise.resolve(this.models.get(name));
+    this.monsterLoads??=new Map();
+    if(this.monsterLoads.has(name))return this.monsterLoads.get(name);
+    const task=(async()=>{
+      const gltf=await loader.loadAsync(new URL(`../public/models/kaiju/${name}.glb?v=${revision}`,import.meta.url).href);
+      const model=gltf.scene;
+      model.traverse(o=>{if(o.isMesh){o.castShadow=name!=='hero-hands';o.receiveShadow=name!=='hero-hands';if(name==='hero-hands')o.frustumCulled=false;if(o.material)o.material.side=name==='hero-hands'?THREE.FrontSide:THREE.DoubleSide;}});
+      if(name!=='hero-hands'){
+        model.traverse(o=>{if(o.isMesh&&o.material.emissive&&!o.material.userData.hitBase){o.material.userData.hitBase=o.material.emissive.clone();}});
+        this.monsterAnimations.set(name,gltf.animations);
+        const bounds=new THREE.Box3().setFromObject(model),size=bounds.getSize(V());
+        const torso=model.getObjectByName('upperbody1')||model.getObjectByName('Bip001_Pelvis_05');
+        const anchor=torso?torso.getWorldPosition(V()):bounds.getCenter(V());
+        const factor=16/size.y,wrapper=new THREE.Group();wrapper.add(model);model.scale.multiplyScalar(factor);model.position.add(V(-anchor.x,-bounds.min.y,-anchor.z).multiplyScalar(factor));
+        wrapper.userData.restPose=[];
+        model.traverse(node=>wrapper.userData.restPose.push({node,position:node.position.clone(),quaternion:node.quaternion.clone(),scale:node.scale.clone()}));
+        this.models.set(name,wrapper);
+      }else this.models.set(name,model);
+      return this.models.get(name);
+    })();
+    this.monsterLoads.set(name,task);
+    task.catch(()=>this.monsterLoads.delete(name));
+    return task;
   }
   warmViewmodel(){
     const target=new THREE.WebGLRenderTarget(64,64),previous=this.renderer.getRenderTarget();
@@ -209,7 +247,15 @@ export class BattleScene extends BattleEngine {
     this.celebration=null;
     this.camera.position.set(0,9,20);this.camera.rotation.set(0,0,0);this.camera.lookAt(0,6,-25);
   }
-  selectMonster(){if(!this.assetReady)return;this.monsterMotion?.dispose();if(this.currentMonster)this.renderScene.remove(this.currentMonster);this.currentMonster=this.models.get(this.waveInfo.model);this.monsterBaseZ=20-this.enemyDistance;this.currentMonster.position.set(0,0,this.monsterBaseZ);this.currentMonster.scale.setScalar(this.wave===5?1.12:1);this.currentMonster.rotation.set(0,0,0);this.knockbackAt=-Infinity;this.monsterHitAt=-Infinity;this.airborne=false;this.renderScene.add(this.currentMonster);this.currentMonster.visible=true;for(const rest of this.currentMonster.userData.restPose||[]){rest.node.position.copy(rest.position);rest.node.quaternion.copy(rest.quaternion);rest.node.scale.copy(rest.scale);}this.currentMonster.updateMatrixWorld(true);
+  selectMonster(){
+    if(!this.assetReady)return;
+    const requested=this.waveInfo.model;
+    if(!this.models.has(requested)){
+      // A later wave can arrive before its kaiju finished streaming in.
+      this.loadMonster(this.loader,this.revision,requested).then(()=>{if(this.waveInfo.model===requested)this.selectMonster();}).catch(()=>{});
+      return;
+    }
+    this.monsterMotion?.dispose();if(this.currentMonster)this.renderScene.remove(this.currentMonster);this.currentMonster=this.models.get(this.waveInfo.model);this.monsterBaseZ=20-this.enemyDistance;this.currentMonster.position.set(0,0,this.monsterBaseZ);this.currentMonster.scale.setScalar(this.wave===5?1.12:1);this.currentMonster.rotation.set(0,0,0);this.knockbackAt=-Infinity;this.monsterHitAt=-Infinity;this.airborne=false;this.renderScene.add(this.currentMonster);this.currentMonster.visible=true;for(const rest of this.currentMonster.userData.restPose||[]){rest.node.position.copy(rest.position);rest.node.quaternion.copy(rest.quaternion);rest.node.scale.copy(rest.scale);}this.currentMonster.updateMatrixWorld(true);
     this.monsterMotion=new MonsterMotion(this.currentMonster,this.waveInfo.model,this.monsterAnimations.get(this.waveInfo.model)||[]);
     if(!this.chargeFlare){this.chargeGroup=new THREE.Group();this.chargeGroup.visible=false;this.renderScene.add(this.chargeGroup);this.chargeFlare=this.flare(V(),0xffab64,1.5,this.chargeGroup,0);this.heldRock=this.rock(this.chargeGroup);this.chargeGroup.visible=true;try{this.renderer.compile(this.renderScene,this.camera);}finally{this.chargeGroup.visible=false;}}
     this.chargeGroup.visible=false;this.monsterLight.intensity=0;this.monsterLight.color.setHex(this.waveInfo.color);this.targetRing.material.color.setHex(this.waveInfo.color);this.clearTransient();
@@ -296,10 +342,10 @@ export class BattleScene extends BattleEngine {
     const m=this.currentMonster;if(!m)return;const t=this.time,a=this.attack,winding=a?.phase==='windup'?clamp(a.age/a.windup,0,1):0,attack=a?.phase==='flight';
     m.rotation.y=this.defeated?.18*Math.sin(t):Math.sin(t*.5)*.04;m.position.y=this.defeated?-Math.pow(1-clamp(this.respawn/3,0,1),2)*21:0;this.monsterBaseZ=mix(this.monsterBaseZ,20-this.enemyDistance,1-Math.exp(-dt*8));m.position.z=this.monsterBaseZ;m.position.x=0;if(a?.kind==='sweep'){const scan=a.phase==='flight'?clamp(a.age/a.flight,0,1):0,ready=a.phase==='windup'?clamp(a.age/a.windup,0,1):1;m.rotation.y+=Math.atan2(-a.safeSide*11*(1-scan),this.enemyDistance)*ready;}
     if(this.time-this.knockbackAt<1){const t=this.time-this.knockbackAt;m.position.y=this.airborne?Math.sin(t*Math.PI)*4:0;m.rotation.x=-Math.sin(t*Math.PI)*.24;}else m.rotation.x=0;
-    if(a?.kind==='charge'&&!this.defeated&&this.time-this.knockbackAt>=1){const dip=a.phase==='windup'?clamp(a.age/a.windup,0,1):1;m.rotation.x=(this.waveInfo.model==='ganq'?.32:.16)*dip;m.position.y-=dip*.22;}
-    if(this.waveInfo.model==='ganq'&&!this.defeated){m.position.y+=Math.sin(t*1.8)*.06;if(a?.kind==='melee')m.position.z+=Math.sin(clamp(a.age/(a.phase==='windup'?a.windup:a.flight),0,1)*Math.PI)*.8;}
+    if(a?.kind==='charge'&&!this.defeated&&this.time-this.knockbackAt>=1){const dip=a.phase==='windup'?clamp(a.age/a.windup,0,1):1;m.rotation.x=(FLOATERS.has(this.waveInfo.model)?.32:.16)*dip;m.position.y-=dip*.22;}
+    if(FLOATERS.has(this.waveInfo.model)&&!this.defeated){m.position.y+=Math.sin(t*1.8)*.06;if(a?.kind==='melee')m.position.z+=Math.sin(clamp(a.age/(a.phase==='windup'?a.windup:a.flight),0,1)*Math.PI)*.8;}
     this.monsterMotion?.update(a,dt,{dead:this.defeated,hurt:this.time-this.monsterHitAt<.22||this.time-this.knockbackAt<.7,time:t});m.position.z+=this.monsterMotion?.lunge||0;m.position.x+=this.monsterMotion?.aimX||0;
-    if(this.chargeGroup){const charging=a?.phase==='windup'&&(a.kind==='bolt'||a.kind==='sweep'||a.kind==='charge'&&this.waveInfo.model==='ganq');this.chargeGroup.visible=!!charging;const progress=charging?clamp(a.age/a.windup,0,1):0;this.chargeGroup.position.copy(this.monsterMotion.origin(this.monsterMotion.castSide(a)));this.heldRock.visible=charging&&this.waveInfo.model==='redking';this.chargeFlare.visible=!this.heldRock.visible;this.chargeFlare.material.color.setHex(this.waveInfo.color);this.chargeFlare.material.opacity=progress*.8;this.chargeFlare.scale.setScalar(.4+progress*2);}
+    if(this.chargeGroup){const charging=a?.phase==='windup'&&(a.kind==='bolt'||a.kind==='sweep'||a.kind==='charge'&&FLOATERS.has(this.waveInfo.model));this.chargeGroup.visible=!!charging;const progress=charging?clamp(a.age/a.windup,0,1):0;this.chargeGroup.position.copy(this.monsterMotion.origin(this.monsterMotion.castSide(a)));this.heldRock.visible=charging&&this.waveInfo.model==='redking';this.chargeFlare.visible=!this.heldRock.visible;this.chargeFlare.material.color.setHex(this.waveInfo.color);this.chargeFlare.material.opacity=progress*.8;this.chargeFlare.scale.setScalar(.4+progress*2);}
     const hitAge=this.time-this.monsterHitAt,flash=hitAge>=0&&hitAge<.1?(1-hitAge/.1)*(this.reduced?.12:.28):0;
     m.traverse(o=>{if(o.isMesh&&o.material.userData.hitBase)o.material.emissive.copy(o.material.userData.hitBase).lerp(hitColor,flash);});
     if(hitAge>=0&&hitAge<.2){m.rotation.z=this.hitSide*Math.sin(hitAge/.2*Math.PI)*.055;m.position.z-=Math.sin(hitAge/.2*Math.PI)*.45;}else m.rotation.z=0;

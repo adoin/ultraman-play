@@ -77,3 +77,8 @@ Adapted the legacy material to metallic-roughness and corrected the display-root
 
 ## Qwen3-TTS generated narration
 Eight original Chinese gameplay cues generated with the Qwen team official Studio using Qwen3-TTS-12Hz-1.7B-CustomVoice, Ryan speaker. Model license Apache-2.0; https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice . The model is not redistributed. Texts, processing notes and checksums: public/audio/SOURCE.md and public/audio/clips.json. A copy of the model license is included at public/audio/QWEN3-TTS-LICENSE.txt. No television dialogue recordings or soundtrack audio are bundled. Music and effects are original procedural audio.
+## MMD kaiju models (Alien Mefilas, Baltan)
+
+Downloaded MMD models distributed by the Sketchfab uploader **这是我的刀盾** (folders named `*_by_这是我的刀盾_*` in the user's local `D:\download`). Formats: `.pmd` / `.pmx` with PNG textures. No author or licence statement ships with the archives, so they are used here as non-commercial fan assets; contact the uploader for the original credit.
+
+Converted with `art/import_mmd.py` (Blender 5.4 + the `mmd_tools` addon): rest-pose mesh only, one Principled material per MMD material with its own diffuse texture, arms lowered from the MMD T-pose, height normalised to 16 units, feet on the ground, facing -Y. Outputs: `public/models/kaiju/mefilas.glb` (wave 4) and `public/models/kaiju/baltan-new.glb` (wave 5). The game animates the whole body only; no skeletal clips are bundled.
