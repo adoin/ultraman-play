@@ -19,6 +19,24 @@ export class MonsterMotion {
       this.nodes.set(key(node.name), node);
       if (node.isBone) this.rest.set(node, node.quaternion.clone());
     });
+    // Converted MMD kaiju keep their skeleton; the bones are romanised
+    // (L_ZYOUWAN upper arm, L_UDE forearm, L_TE hand, MUNE chest, KOSHI hips).
+    this.mmd = ['MUNE', 'L_ZYOUWAN', 'R_ZYOUWAN', 'L_TE', 'R_TE'].every((name) => this.node(name));
+    this.legRest = new Map();
+    if (this.mmd)
+      for (const side of ['L', 'R'])
+        for (const [a, b] of [
+          [side + '_MOMO', side + '_SUNE'],
+          [side + '_SUNE', side + '_ASHI'],
+        ]) {
+          const from = this.node(a);
+          const to = this.node(b);
+          if (from && to)
+            this.legRest.set(
+              a,
+              to.getWorldPosition(V()).sub(from.getWorldPosition(V())).normalize(),
+            );
+        }
     this.curlSigns = new Map();
     if (type === 'redking')
       for (const suffix of ['L', 'R']) {
@@ -102,8 +120,22 @@ export class MonsterMotion {
   node(name) {
     return this.nodes.get(key(name));
   }
+  /** MMD hand bone position, so a projectile leaves the actual claw. */
+  mmdHand(side) {
+    const hand = this.node(side + '_TE');
+    if (!hand) return null;
+    const forearm = this.node(side + '_UDE');
+    const point = hand.getWorldPosition(V());
+    return forearm
+      ? point.clone().addScaledVector(point.clone().sub(forearm.getWorldPosition(V())).normalize(), 0.6)
+      : point;
+  }
   origin(side = 'R') {
     if (this.type === 'ganq') return this.root.localToWorld(V(0, 10.8, 3.5));
+    if (this.mmd) {
+      const point = this.mmdHand(side);
+      if (point) return point;
+    }
     const hand =
       this.type === 'redking'
         ? this.node('hand.' + side)
@@ -164,6 +196,60 @@ export class MonsterMotion {
           ease(active.phase === 'windup' ? active.age / active.windup : 1) *
           fade
         : 0;
+    if (this.mmd) {
+      // Skeletal drive for the converted MMD kaiju: reset, then aim the real
+      // limb bones for the pose the current attack needs.
+      for (const [bone, rotation] of this.rest) bone.quaternion.copy(rotation);
+      this.root.updateWorldMatrix(true, true);
+      const gather = active ? ease(active.phase === 'windup' ? active.age / active.windup : 1) : 0;
+      const strike = active?.phase === 'flight' ? ease(active.age / active.flight) : 0;
+      const side = active?.safeSide > 0 ? 'L' : 'R';
+      const sign = side === 'L' ? 1 : -1;
+      for (const limb of ['L', 'R']) {
+        const out = limb === 'L' ? 1 : -1;
+        this.aim(limb + '_ZYOUWAN', limb + '_UDE', V(out * 0.3, -1, 0.06));
+        this.aim(limb + '_UDE', limb + '_TE', V(out * 0.14, -1, 0.12));
+      }
+      this.turn('KUBI', V(1, 0, 0), active?.kind === 'charge' ? 0.12 * gather : 0.05 * Math.sin(time * 1.7));
+      this.turn('MUNE', V(1, 0, 0), 0.02 * Math.sin(time * 1.3));
+      if (active) {
+        if (active.kind === 'bolt' || active.kind === 'sweep') {
+          const raise = V(sign * 0.35, 0.55, -0.45).lerp(V(sign * 0.14, 0.12, 1), strike);
+          this.aim(side + '_ZYOUWAN', side + '_UDE', raise.clone().lerp(V(sign * 0.3, -1, 0.06), 1 - gather));
+          this.aim(side + '_UDE', side + '_TE', raise);
+          this.turn('MUNE', V(0, 1, 0), -sign * 0.25 * gather);
+        }
+        if (active.kind === 'melee') {
+          const punch = strike > 0 ? V(sign * 0.16, 0.12, 1) : V(sign * 0.4, 0.2, -0.7);
+          this.aim(side + '_ZYOUWAN', side + '_UDE', punch);
+          this.aim(side + '_UDE', side + '_TE', punch);
+          this.turn('MUNE', V(0, 1, 0), -sign * 0.3 * strike * fade);
+        }
+        if (active.kind === 'charge') {
+          const lean = (active.phase === 'windup' ? gather : 1) * fade;
+          this.turn('KOSHI', V(1, 0, 0), 0.22 * lean);
+          this.turn('MUNE', V(1, 0, 0), 0.18 * lean);
+          if (active.phase === 'flight')
+            for (const limb of ['L', 'R']) {
+              const direction = this.legRest.get(limb + '_MOMO');
+              if (direction) {
+                const stride = Math.sin(active.age * 14) * (limb === 'L' ? 0.4 : -0.4);
+                this.aim(
+                  limb + '_MOMO',
+                  limb + '_SUNE',
+                  direction.clone().applyAxisAngle(V(1, 0, 0), -stride),
+                );
+              }
+            }
+        }
+      }
+      if (hurt) this.turn('MUNE', V(1, 0, 0), -0.16);
+      if (dead) {
+        this.turn('MUNE', V(1, 0, 0), -0.5);
+        this.turn('KOSHI', V(1, 0, 0), -0.35);
+      }
+      return;
+    }
     if (this.type === 'redking') {
       for (const [bone, rotation] of this.rest) bone.quaternion.copy(rotation);
       this.root.updateWorldMatrix(true, true);

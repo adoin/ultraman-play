@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
-import {BattleEngine, SKILLS, CELEBRATION, WAVES} from './combat.js?v=72e41d5ee5e0';
-import {MonsterMotion} from './monster-motion.js?v=72e41d5ee5e0';
-import {HeroAnimation} from './hero-animation.js?v=72e41d5ee5e0';
-import {BEAM_TIMING,DISC_TIMING,discTiming} from './action-timing.js?v=72e41d5ee5e0';
-import {BeamVolume} from './beam-effect.js?v=72e41d5ee5e0';
+import {BattleEngine, SKILLS, CELEBRATION, WAVES} from './combat.js?v=5a0468b308f0';
+import {MonsterMotion} from './monster-motion.js?v=5a0468b308f0';
+import {HeroAnimation} from './hero-animation.js?v=5a0468b308f0';
+import {BEAM_TIMING,DISC_TIMING,discTiming} from './action-timing.js?v=5a0468b308f0';
+import {BeamVolume} from './beam-effect.js?v=5a0468b308f0';
 const clamp=THREE.MathUtils.clamp,mix=THREE.MathUtils.lerp;
 const hitColor=new THREE.Color(0xffe3c8);
 const V=(x=0,y=0,z=0)=>new THREE.Vector3(x,y,z);
@@ -373,7 +373,7 @@ export class BattleScene extends BattleEngine {
   }
   getHitPoint(){
     const core=this.currentMonster?.getObjectByName('ChestCore');
-    if(!core){if(this.waveInfo.model==='ganq')return this.currentMonster.localToWorld(V(0,10.8,3.5));const chest=this.currentMonster?.getObjectByName('upperbody2')||this.currentMonster?.getObjectByName('Bip001_Spine1_015');return chest?chest.getWorldPosition(V()).add(V(0,0,1.5)):this.currentMonster.localToWorld(V(0,8.5,2));}
+    if(!core){if(this.waveInfo.model==='ganq')return this.currentMonster.localToWorld(V(0,10.8,3.5));const chest=this.currentMonster?.getObjectByName('upperbody2')||this.currentMonster?.getObjectByName('Bip001_Spine1_015')||this.currentMonster?.getObjectByName('MUNE');return chest?chest.getWorldPosition(V()).add(V(0,0,1.5)):this.currentMonster.localToWorld(V(0,8.5,2));}
     core.updateWorldMatrix(true,false);if(!core.geometry.boundingBox)core.geometry.computeBoundingBox();
     return core.localToWorld(core.geometry.boundingBox.getCenter(V())).add(V(0,0,.13));
   }
