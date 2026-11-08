@@ -1,4 +1,4 @@
-import {BEAM_TIMING,DISC_TIMING,discTiming} from './action-timing.js?v=56f64ab97ca7';
+import {BEAM_TIMING,DISC_TIMING,discTiming} from './action-timing.js?v=13d009a55059';
 export const WAVES = [
   {name:'雷德王',model:'redking',title:'海湾入侵者',hp:110,color:0xffcb7a,attacks:['bolt','charge','slam']},
   {name:'巴尔坦星人',model:'baltan',title:'宇宙忍者',hp:140,color:0x68d9ff,attacks:['bolt','charge','sweep']},
@@ -10,7 +10,9 @@ export const WAVES = [
   {name:'卡欧斯 · 赛文',model:'chaos-seven',title:'暗影头镖',hp:255,color:0xdc7bff,attacks:['bolt','sweep','charge']},
   {name:'卡欧斯 · 泰罗',model:'chaos-taro',title:'暗之王冠',hp:275,color:0xff9a7b,attacks:['sweep','bolt','charge']},
   {name:'卡欧斯 · 奥特曼',model:'chaos-ultraman',title:'光之逆影',hp:295,color:0xc7a6ff,attacks:['bolt','charge','sweep']},
-  {name:'机械哥莫拉',model:'gomora-mecha',title:'最终守护战',hp:330,color:0xffb066,attacks:['slam','bolt','charge']},
+  {name:'杰顿',model:'zetton',title:'宇宙恐龙',hp:320,color:0xff7a5c,attacks:['bolt','sweep','charge']},
+  {name:'机械哥莫拉',model:'gomora-mecha',title:'钢铁咆哮',hp:340,color:0xffb066,attacks:['slam','bolt','charge']},
+  {name:'迦拉克隆',model:'galactron',title:'最终守护战',hp:380,color:0x7fe7ff,attacks:['sweep','bolt','slam']},
 ];
 export const SKILLS={palm:{cooldown:2.2,damage:20,impact:.34,duration:.72},beam:{cooldown:3.2,damage:46,impact:BEAM_TIMING.impact,duration:BEAM_TIMING.end},disc:{cooldown:1.65,damage:31,impact:DISC_TIMING.impact,duration:DISC_TIMING.end}};
 export const PUNCH={cooldown:.28,damage:12,impact:.18,duration:.36};
@@ -29,6 +31,8 @@ export const MONSTER_ATTACK_NAMES={
   'chaos-taro':{bolt:'宇宙光弹',sweep:'王者射线',melee:'宇宙拳击',charge:'王冠冲锋'},
   'chaos-ultraman':{bolt:'斯派修姆光弹',sweep:'逆光斯派修姆',melee:'奥特拳',charge:'高速突进'},
   'gomora-mecha':{bolt:'机械光线',sweep:'超振动波',melee:'机械重拳',charge:'蛮力冲锋'},
+  zetton:{bolt:'一兆度火球',sweep:'杰顿光线',melee:'能量拳',charge:'瞬移突进'},
+  galactron:{bolt:'迦拉克隆光线',sweep:'重力冲击波',melee:'巨体重击',charge:'暴走冲锋'},
 };
 export const ATTACKS={
   melee:{name:'近身重拳',hint:'胸前交叉双臂防御，或侧身闪避',damage:12,windup:1.0,flight:.3},

@@ -45,6 +45,26 @@ export class MonsterMotion {
       foot: pair('ASHI', '足首'),
     };
     this.mmd = !!(this.rig.arm.L && this.rig.arm.R && this.rig.hand.L && this.rig.hand.R && this.rig.chest);
+    // A tail baked behind the feet (art/mmd_tail.py) still needs life: sway the
+    // chain in world space so the appendage flexes instead of swinging rigidly.
+    const tail = [];
+    root.traverse((node) => {
+      if (node.isBone && /^(hair|尻尾|しっぽ|tail)\d*$/i.test(node.name)) tail.push(node);
+    });
+    this.tail = [];
+    if (tail.length >= 4) {
+      const depth = (bone) => {
+        let levels = 0;
+        for (let node = bone; node; node = node.parent) levels++;
+        return levels;
+      };
+      tail.sort((a, b) => depth(a) - depth(b));
+      root.updateWorldMatrix(true, true);
+      const tipY = tail[tail.length - 1].getWorldPosition(V()).y;
+      const restY = (this.rig.hips || root).getWorldPosition(V()).y;
+      // Head hair ends above the hips; only a real hanging tail passes this.
+      if (tipY < restY) this.tail = tail;
+    }
     this.legRest = new Map();
     if (this.mmd)
       for (const limb of ['L', 'R']) {
@@ -269,6 +289,15 @@ export class MonsterMotion {
               );
             }
         }
+      }
+      if (this.tail.length) {
+        const life = dead ? 0 : 1;
+        this.tail.forEach((bone, index) => {
+          const ramp = (index + 1) / this.tail.length;
+          const phase = time * 1.6 - index * 0.7;
+          this.turn(bone.name, V(0, 1, 0), 0.03 * ramp * life * Math.sin(phase));
+          this.turn(bone.name, V(1, 0, 0), 0.018 * ramp * life * Math.cos(phase * 0.8));
+        });
       }
       if (hurt && rig.chest) this.turn(rig.chest.name, V(1, 0, 0), -0.16);
       if (dead) {
