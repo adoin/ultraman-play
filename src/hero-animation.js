@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import {BEAM_TIMING,DISC_TIMING,discTiming} from './action-timing.js?v=13d009a55059';
-import {ViewmodelLens} from './viewmodel-lens.js?v=13d009a55059';
+import {BEAM_TIMING,DISC_TIMING,discTiming} from './action-timing.js?v=0d35fa20d768';
+import {ViewmodelLens} from './viewmodel-lens.js?v=0d35fa20d768';
 
 const v=(x=0,y=0,z=0)=>new THREE.Vector3(x,y,z);
 const q=()=>new THREE.Quaternion();
@@ -404,7 +404,8 @@ export class HeroAnimation {
     this.sockets.disc.copy(this.camera.worldToLocal(tip)).addScaledVector(forward,this.aspect<1?.28:.35).add(v(0,0,-.04));
   }
 
-  socketWorld(name){return this.lens.effectPoint(this.sockets[name]);}
+  /** The Zepellion ray leaves the same forearm the Mebium ray does. */
+  socketWorld(name){return this.lens.effectPoint(this.sockets[name==='zepellion'?'beam':name]);}
   beamRail(){
     const right=this.rigs[1].metrics(),axis=right.wrist.clone().sub(right.elbow).normalize();
     return [right.elbow.clone().addScaledVector(axis,.14),right.wrist.clone().addScaledVector(axis,.54)].map(point=>this.lens.effectPoint(point.add(v(0,0,-.18))));
