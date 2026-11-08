@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
-import {BattleEngine, SKILLS, CELEBRATION, WAVES} from './combat.js?v=1751b63776c8';
-import {MonsterMotion} from './monster-motion.js?v=1751b63776c8';
-import {HeroAnimation} from './hero-animation.js?v=1751b63776c8';
-import {BEAM_TIMING,DISC_TIMING,discTiming} from './action-timing.js?v=1751b63776c8';
-import {BeamVolume} from './beam-effect.js?v=1751b63776c8';
+import {BattleEngine, SKILLS, CELEBRATION, WAVES} from './combat.js?v=72e41d5ee5e0';
+import {MonsterMotion} from './monster-motion.js?v=72e41d5ee5e0';
+import {HeroAnimation} from './hero-animation.js?v=72e41d5ee5e0';
+import {BEAM_TIMING,DISC_TIMING,discTiming} from './action-timing.js?v=72e41d5ee5e0';
+import {BeamVolume} from './beam-effect.js?v=72e41d5ee5e0';
 const clamp=THREE.MathUtils.clamp,mix=THREE.MathUtils.lerp;
 const hitColor=new THREE.Color(0xffe3c8);
 const V=(x=0,y=0,z=0)=>new THREE.Vector3(x,y,z);
@@ -50,7 +50,10 @@ export class BattleScene extends BattleEngine {
     this.targetRing=this.mesh(new THREE.RingGeometry(6.9,7.05,72),glow(0x77d3ed,.45),V(0,.05,-15));this.targetRing.rotation.x=-Math.PI/2;this.targetRing.visible=false;
     this.warningRing=this.mesh(new THREE.RingGeometry(7.3,7.65,72),glow(0xffa266,.5),V(0,.07,-15));this.warningRing.rotation.x=-Math.PI/2;this.warningRing.visible=false;
     this.safeZone=this.mesh(new THREE.PlaneGeometry(7,20),glow(0x58edc7,.12),V(5,.1,2));this.safeZone.rotation.x=-Math.PI/2;this.safeZone.visible=false;
-    const creatureFill=new THREE.PointLight(0xfff2e6,180,24,2);creatureFill.position.set(0,13,-7);world.add(creatureFill);
+    const creatureFill=new THREE.PointLight(0xfff2e6,300,26,2);creatureFill.position.set(0,13,-7);world.add(creatureFill);
+    // Kaiju textures are dark; a soft kicker from the player's side keeps the
+    // shaded panels from reading as flat black patches.
+    const kaijuKicker=new THREE.PointLight(0xe6f0ff,150,34,2);kaijuKicker.position.set(-6,15,4);world.add(kaijuKicker);
     this.monsterLight=new THREE.PointLight(0x4fffd9,0,20,1.7);this.monsterLight.position.set(0,9,-12);world.add(this.monsterLight);
   }
   async loadCity(loader){
