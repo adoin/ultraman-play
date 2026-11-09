@@ -1,5 +1,5 @@
 ﻿import * as THREE from 'three';
-import { EMIT_OFFSETS, REST_ARM, emitFor, moveFor } from './monster-poses.js?v=ad5254a129a5';
+import { EMIT_OFFSETS, REST_ARM, emitFor, moveFor } from './monster-poses.js?v=b2b7e45c929d';
 
 const V = (x = 0, y = 0, z = 0) => new THREE.Vector3(x, y, z);
 const Q = () => new THREE.Quaternion();
