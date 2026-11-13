@@ -1,9 +1,9 @@
-import {GameAudio} from './game-audio.js?v=13e67883ce49';
-import { BattleScene } from './scene.js?v=13e67883ce49';
-import { GestureRecognizer } from './gestures.js?v=13e67883ce49';
-import {PoseService} from './pose-service.js?v=13e67883ce49';
-import {SkillHUD} from './skill-hud.js?v=13e67883ce49';
-import {BattleEngine, ATTACKS, SKILLS, SHIELD, WAVES} from './combat.js?v=13e67883ce49';
+import {GameAudio} from './game-audio.js?v=fbcd31d42a12';
+import { BattleScene } from './scene.js?v=fbcd31d42a12';
+import { GestureRecognizer } from './gestures.js?v=fbcd31d42a12';
+import {PoseService} from './pose-service.js?v=fbcd31d42a12';
+import {SkillHUD} from './skill-hud.js?v=fbcd31d42a12';
+import {BattleEngine, ATTACKS, SKILLS, SHIELD, WAVES} from './combat.js?v=fbcd31d42a12';
 const $=id=>document.getElementById(id);
 const recognizer=new GestureRecognizer();
 const audio=new GameAudio();audio.prepare();
@@ -121,14 +121,14 @@ $('difficulty').onchange=e=>scene.difficulty=e.target.value;
 $('quality').onchange=e=>scene.setQuality?.(e.target.value);
 async function changeViewpoint(mode){
   if(state.viewChange)return;
-  const selects=[$('view-mode'),$('quick-view-mode')],statuses=[$('view-mode-state'),$('quick-view-status')];
+  const selects=[$('view-mode')],statuses=[$('view-mode-state')];
   for(const select of selects){select.value=mode;select.disabled=true;}
   for(const status of statuses){status.hidden=false;status.textContent='正在准备视角…';}
   try{state.viewChange=scene.setViewMode(mode);syncPause();await state.viewChange;$('game').setAttribute('aria-label',mode==='third'?'从奥特曼身后看向怪兽的第三人称战斗画面':'从英雄双眼看向怪兽的第一人称战斗画面');for(const status of statuses){status.textContent='';status.hidden=true;}}
   catch{for(const select of selects)select.value=scene.viewMode||'first';for(const status of statuses)status.textContent='角色暂时无法加载，请重试切换';}
   finally{state.viewChange=null;for(const select of selects)select.disabled=false;syncPause();}
 }
-$('view-mode').onchange=$('quick-view-mode').onchange=e=>changeViewpoint(e.target.value);
+$('view-mode').onchange=e=>changeViewpoint(e.target.value);
 $('recenter').onclick=()=>{recognizer.reset();state.gestureLean=0;state.gestureGuard=false;log('已校准侧身中心');};
 $('fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.querySelector('.arena').requestFullscreen();}catch{say('浏览器不支持全屏，可横屏游玩');}};
 for(const [id,button] of [['help-dialog','help'],['settings-dialog','settings'],['credits-dialog','credits']]){const dialog=$(id);$(button).onclick=()=>{dialog.showModal();clearDefense();syncPause();};dialog.addEventListener('close',()=>{recognizer.reset();clearDefense();syncPause();});dialog.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>dialog.close());dialog.addEventListener('click',e=>{if(e.target===dialog){const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close();}});}

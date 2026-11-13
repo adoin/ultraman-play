@@ -1,5 +1,5 @@
-import {locomotionFor,approachProgress,approachOpacity} from './locomotion.js?v=13e67883ce49';
-﻿import {BEAM_TIMING,DISC_TIMING,ZEPELLION_TIMING,discTiming,beamTimingFor} from './action-timing.js?v=13e67883ce49';
+import {locomotionFor,approachProgress,approachOpacity} from './locomotion.js?v=fbcd31d42a12';
+﻿import {BEAM_TIMING,DISC_TIMING,ZEPELLION_TIMING,discTiming,beamTimingFor} from './action-timing.js?v=fbcd31d42a12';
 export const WAVES = [
   {name:'雷德王',model:'redking',title:'海湾入侵者',hp:110,color:0xffcb7a,attacks:['bolt','charge','slam']},
   {name:'巴尔坦星人',model:'baltan',title:'宇宙忍者',hp:210,color:0x68d9ff,attacks:['bolt','charge','sweep']},
