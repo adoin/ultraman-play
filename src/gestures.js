@@ -1,4 +1,4 @@
-import {PoseHold} from './pose-hold.js?v=fbcd31d42a12';
+import {PoseHold} from './pose-hold.js?v=afc8db5cc04c';
 // Deliberate dwell remains necessary; geometric jitter may pause it briefly.
 export const POSE_HOLDS = Object.freeze({beamEasy:420,beamNormal:600,zepellionEasy:700,zepellionNormal:950,gatherEasy:260,gatherNormal:340,gatherWindow:7000,spreadEasy:260,spreadNormal:340,spreadWindow:5000});
 const length = (a,b) => Math.hypot(a.x-b.x,a.y-b.y);
