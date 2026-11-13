@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {gaitSample,locomotionFor,approachProgress} from './locomotion.js?v=d46df6c98531';
+import {gaitSample,locomotionFor,approachProgress} from './locomotion.js?v=f5c9d6612372';
 const V=(x=0,y=0,z=0)=>new THREE.Vector3(x,y,z),Q=()=>new THREE.Quaternion();
 const clamp=t=>THREE.MathUtils.clamp(t,0,1),ease=t=>{t=clamp(t);return t*t*(3-2*t);};
 /** Distance-driven gait with two-bone IK. Grounded feet oppose body travel. */
