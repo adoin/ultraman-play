@@ -1,4 +1,4 @@
-import {SKILLS,SHIELD,ATTACKS} from './combat.js?v=f5c9d6612372';
+import {SKILLS,SHIELD,ATTACKS} from './combat.js?v=13e67883ce49';
 
 const clamp=value=>Math.max(0,Math.min(1,value));
 const names={beam:'梅特里姆光线',zepellion:'哉佩利敖光线',disc:'八分光轮',palm:'手掌光剑',guard:'光之护盾'};
