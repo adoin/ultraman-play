@@ -1,7 +1,7 @@
-import {MonsterLocomotion} from './monster-locomotion.js?v=afc8db5cc04c';
-import {locomotionFor} from './locomotion.js?v=afc8db5cc04c';
+import {MonsterLocomotion} from './monster-locomotion.js?v=1b9ba821fb53';
+import {locomotionFor} from './locomotion.js?v=1b9ba821fb53';
 ﻿import * as THREE from 'three';
-import { EMIT_OFFSETS, REST_ARM, emitFor, moveFor } from './monster-poses.js?v=afc8db5cc04c';
+import { EMIT_OFFSETS, REST_ARM, emitFor, moveFor } from './monster-poses.js?v=1b9ba821fb53';
 
 const V = (x = 0, y = 0, z = 0) => new THREE.Vector3(x, y, z);
 const Q = () => new THREE.Quaternion();
